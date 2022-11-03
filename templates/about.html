@@ -1,0 +1,9 @@
+{% extends 'base.html' %} {% block title %} About {% endblock %}
+{% block content %}
+<div class="container mt-3" align="center">          
+    <img src="{{url_for('static', filename='images/oj.jpg')}}" class="img-thumbnail" width="200" height="100"> 
+    <h2>Hey, my name is Ojima Grace</h2>
+    <p>I am a software engineering student at AltSchool Africa,currently learning Python.<br>
+       I am also a trained Lawyer.
+    </p>
+{% endblock content %}

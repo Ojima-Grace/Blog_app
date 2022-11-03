@@ -1,0 +1,20 @@
+{% extends 'base.html' %} {% block title %} Edit {% endblock %}
+
+{% block content %}
+{% if current_user.is_authenticated %}
+<div class="container mt-3">
+  <h2>Edit Post</h2>
+  <form action="/edit_post/{{post.id}}" method="POST">
+    <div class="mb-3 mt-3">
+      <label for="title">Title:</label>
+      <input type="text" class="form-control" id="title" placeholder="" name="title" value="{{post.title}}">
+    </div>
+    <div class="mb-3 mt-3">
+      <label for="text">Post:</label>
+      <textarea class="form-control" rows="5" id="text" name="text">{{post.text}}</textarea>
+    </div>
+    <button type="submit" class="btn btn-secondary">Edit Post</button>
+  </form>
+</div>
+{% endif %}
+{% endblock content %}

@@ -1,0 +1,148 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+}
+.container {
+    width: 100%;
+    min-height: 100vh;
+    background: #eceaff;
+    color: rgb(37, 30, 30);
+}
+nav {
+    background: #1a1a1a;
+    width: 100%;
+    padding: 10px 10%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+.logo {
+    width: 75px;
+}
+.profile {
+    width: 60px;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    margin-left: 30px;
+}
+nav ul {
+    width: 100%;
+    text-align: right;
+}
+nav ul li{
+    display: inline-block;
+    list-style: none;
+    margin: 10px 20px;
+}
+nav ul li a{
+    color: #fff;
+    text-decoration: none;
+}
+.sub-menu-wrap{
+    position: absolute;
+    top: 100%;
+    right: 10%;
+    width: 320px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s;
+}
+
+.sub-menu-wrap.open-menu{
+    max-height: 400px;
+}
+
+.sub-menu{
+    background: #fff;
+    padding: 20px;
+    margin: 10px;   
+}
+.user-info{
+    display: flex;
+    align-items: center;    
+}
+.user-info h3{
+    font-weight: 500;
+}
+.user-info img {
+    width: 60px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+.sub-menu hr{
+    border: 0;
+    height: 1px;
+    width: 100%;
+    background: #ccc;
+    margin: 15px 0 10px;
+}
+.sub-menu-link{
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #525252;
+    margin: 12px 0;
+    transition: 0.5s
+}
+.sub-menu-link:hover{
+    transform: translateX(5px);
+}
+.sub-menu-link:hover p{
+    font-weight: 600;
+}
+.sub-menu-link p{
+    width: 100%;    
+}
+.header-post{
+    margin-top: 70px;
+    color: #1a1a1a;
+    text-align: center;
+}
+.title h1{
+    font-size: 32px;
+    line-height: 10px;
+    color: #1a1a1a;
+}
+form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+.form-control{
+    width: 600px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    border-bottom: 1px solid #1a1a1a;
+    color: #1a1a1a;
+    font-size: 18px;
+    margin-bottom: 16px;
+}
+input {
+    height: 45px;
+    background: transparent;
+}
+.form-control:hover{
+    background: transparent;
+}
+form .submit{
+    background-color: #1a1a1a;
+    border-color: transparent;
+    color: #fff;
+    font-size: 20px;
+    letter-spacing: 2px;
+    height: 50px;
+    margin-top: 20px;
+}
+form .submit:hover{
+    cursor: pointer;
+    background-color: #1a1a1a;
+    border-color: transparent;
+    color: #fff;
+}

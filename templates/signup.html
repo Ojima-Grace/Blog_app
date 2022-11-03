@@ -1,0 +1,45 @@
+{% extends 'base.html' %} {% block title %} Signup {% endblock %}
+
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=True) %}
+{% if message %}
+ {% for category, message in messages %}
+ <div class="alert alert-danger alert-dismissible fade show" role="alert">
+   {{messages}}
+   <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+ </div>
+ {% endfor %}
+{% endif %}
+{% endwith %}
+  <div class="container mt-2">
+    <h2 align="center">Signup</h2>
+    <form action="{{url_for('register')}}" method="POST">
+      <div class="mb-2 mt-2">
+        <label for="username">Username:</label>
+        <input type="text" class="form-control" id="username" placeholder="" name="username">
+      </div>
+      <div class="mb-2 mt-2">
+        <label for="firstname">First Name:</label>
+        <input type="text" class="form-control" id="firstname" placeholder="" name="firstname">
+      </div>
+      <div class="mb-2 mt-2">
+        <label for="lastname">Last Name:</label>
+        <input type="text" class="form-control" id="lastname" placeholder="" name="lastname">
+      </div>
+      <div class="mb-2 mt-2">
+        <label for="email">Email:</label>
+        <input type="email" class="form-control" id="email" placeholder="" name="email">
+      </div>
+      <div class="mb-2">
+        <label for="password">Password:</label>
+        <input type="password" class="form-control" id="password" placeholder="" name="password">
+      </div>
+      <div class="mb-2">
+        <label for="password2">Confirm Password:</label>
+        <input type="password" class="form-control" id="password2" placeholder="" name="password2">
+      </div>
+      <button type="submit" class="btn btn-secondary">Signup</button>
+      <span>Already have an account? <a href="{{url_for('login')}}">Login Here</a></span>
+    </form>
+  </div>
+{% endblock content %}
