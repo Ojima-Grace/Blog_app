@@ -3,7 +3,7 @@
 {% block content %}
 {% if current_user.is_authenticated %}
 <div class="container mt-3">
-  <h2>Crete a Post</h2>
+  <h2>Create a Post</h2>
   <form action="{{url_for('create_post')}}" method="POST">
     <div class="mb-3 mt-3">
       <label for="title">Title:</label>

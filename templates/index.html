@@ -16,6 +16,16 @@
       {{post.text}}
       </div>
       <div class="card-footer" style="background: transparent">posted by ~ <a href="/posts/{{post.user.username}}" style="color:black; text-decoration:none;"> {{post.user.username}}</a><br>{{post.date_created}}</div>
+      <div class="card-footer d-flex justify-content-center align-items-center">
+        <a class="me-4" href="/comment/{{post.id}}" style="color:black;">
+          <i class="fa-regular fa-comment"><small>  {{post.comments|length}}  </small></i>
+        </a>
+        {% if user.id in post.likes|map(attribute="author")|list %}
+        <a href="/like-post/{{post.id}}" style="color:black;"><i class="fa-solid fa-heart">  {{ post.likes|length }}  </i></a>
+        {% else %}
+        <a href="/like-post/{{post.id}}" style="color:black;"><i class="fa-regular fa-heart">  {{ post.likes|length }}  </i></a>
+        {% endif %}
+      </div>
     </div>
   </div>
   <br>

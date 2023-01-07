@@ -23,7 +23,7 @@ base_dir = os.path.dirname(os.path.realpath(__file__))
 
 app = Flask(__name__)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///' + os.path.join(base_dir, 'bloggers.db')
+app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///' + os.path.join(base_dir, 'blogging.db')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = '7263bdd5124a04da76f0e499a9ace817c470f9e0'
 
@@ -40,6 +40,9 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.Text(), nullable=False)
     date_created = db.Column(db.DateTime(timezone=True), default=func.now())
     posts = db.relationship("Post", backref="user", passive_deletes=True)
+    comments = db.relationship("Comment", backref="user", passive_deletes=True)
+    likes = db.relationship("Like", backref="user", passive_deletes=True)
+
 
     def __repr__(self):
         return f"User <{self.username}>"
@@ -48,9 +51,13 @@ class Post(db.Model):
     __tablename__="post"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), nullable=False)
-    text = db.Column(db.String(140), nullable=False)
+    text = db.Column(db.String(200), nullable=False)
     date_created = db.Column(db.DateTime(timezone=True), default=func.now())
     author = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
+    comments = db.relationship("Comment", backref="post", passive_deletes=True)
+    likes = db.relationship("Like", backref="post", passive_deletes=True)
+
+
 
     def __init__(self, title, text, author):
         self.title = title
@@ -60,6 +67,24 @@ class Post(db.Model):
     def __repr__(self):
         return f"Post <{self.title}>"
 
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String(140), nullable=False)
+    date_created = db.Column(db.DateTime(timezone=True), default=func.now())
+    author = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey("post.id", ondelete="CASCADE"), nullable=False)
+
+    def __repr__(self):
+        return f"Comment <{self.text}>"
+
+class Like(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date_created = db.Column(db.DateTime(timezone=True), default=func.now())
+    author = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey("post.id", ondelete="CASCADE"), nullable=False)
+
+
+
 @login_manager.user_loader
 def user_loader(id):
     return User.query.get(int(id))
@@ -68,6 +93,7 @@ def user_loader(id):
 @app.route('/home')
 def index():
     posts = Post.query.all()
+    posts = Post.query.order_by(Post.id.desc()).all()
 
     return render_template('index.html', user=current_user, posts=posts) 
 
@@ -195,7 +221,58 @@ def edit_post(id):
         return redirect(url_for("index"))
     
     return render_template("edit_post.html", post=post)
+
+@app.route('/comment/<post_id>', methods=["GET", "POST"])
+@login_required
+def comment(post_id):
+    post = Post.query.get_or_404(post_id)
+    posts = Post.query.order_by(Post.id.desc()).all()
+
+    if request.method == "POST":
+        text = request.form.get('text')
+        if not text:
+            flash("Comment cannot be empty!", category="error")
+        else:
+            flash("Comment Posted!", category="success")
+            comment = Comment(text=text, author=current_user.id, post_id=post.id)
+
+        db.session.add(comment)
+        db.session.commit()
+
+    return render_template('comment.html', post=post, posts=posts, user=current_user)
+
+@app.route('/delete_comment/<id>', methods=["GET", "POST"])
+@login_required
+def delete_comment(id):
+    comment = Comment.query.filter_by(id=id).first()
+
+    if not comment:
+        flash("Comment does not exist!", category="error")
+    else:
+        db.session.delete(comment)
+        db.session.commit()
+        flash("Comment deleted!", category="success")
+        
+    return redirect(url_for('index'))
+
+@app.route('/like-post/<post_id>', methods=["GET", "POST"])
+@login_required
+def like(post_id):
+    post = Post.query.filter_by(id=post_id)
+    like = Like.query.filter_by(author=current_user.id, post_id=post_id).first()
     
+    if not post:
+        flash("Post does not exist!", category="error")
+    elif like:
+        db.session.delete(like)
+        db.session.commit()
+    else:
+        like = Like(author=current_user.id, post_id=post_id)
+        db.session.add(like)
+        db.session.commit()
+
+    return redirect(url_for('index'))
+
 
 @app.errorhandler(404)
 def page_not_found(e):
